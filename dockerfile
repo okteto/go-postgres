@@ -1,14 +1,14 @@
-FROM golang:latest
+FROM golang:1.16-alpine
 
-RUN mkdir /build
-WORKDIR /build
+WORKDIR /app
 
-RUN export GO111MODULE=on
-RUN go get github.com/anitaachu/go-moviestore/main
-RUN cd /build && git clone https://github.com/anitaachu/go-moviestore.git
+COPY go.mod ./
+COPY go.sum ./
 
-RUN cd /build/go-moviestore/main && go buid
+RUN go mod download
+
+COPY *.go ./
+
+RUN go build -o /go-moviestore
 
 EXPOSE 8080
-
-ENTRYPOINT ["/build/go-movies/main/main"]
