@@ -1,11 +1,11 @@
 package main
 
-import (
+import ( 
+	"os"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -43,15 +43,22 @@ var db *gorm.DB
 var err error
 
 func main() {
+	
+	postgres_connection := fmt.Sprintf(os.Getenv("POSTGRES_CONNECTION"))
 
-	POSTGRES_CONNECTION := fmt.Sprintf(os.Getenv("POSTGRES_CONNECTION"))
 
 	db, err = gorm.Open("postgres", POSTGRES_CONNECTION)
 	if err != nil {
 		log.Fatal(err)
+		panic(err)
 	} else {
 		fmt.Println("Successfully connected to database!")
 
+	}
+	
+	err = db.DB().Ping()
+	if err != nil {
+		panic(err)
 	}
 
 	defer db.Close()
